@@ -2,8 +2,10 @@ from flask import Blueprint
 from CTFd.utils.modes import get_model
 from CTFd.models import Awards
 from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
+from CTFd.plugins import register_plugin_assets_directory
 
 from .model import NCPSChallenge
+from .blueprint import load_bp
 
 
 class NCPS(BaseChallenge):
@@ -106,4 +108,9 @@ class NCPS(BaseChallenge):
 
 
 def load(app):
+    register_plugin_assets_directory(app, base_path="/plugins/NCPS/assets/")
+    CHALLENGE_CLASSES["NCPS"] = NCPS
+
+    ncps_bp = load_bp()
+    app.register_blueprint(ncps_bp)
     print("NCPS plugin is ready!")

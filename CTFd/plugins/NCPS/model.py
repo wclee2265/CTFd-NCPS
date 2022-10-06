@@ -1,4 +1,4 @@
-from CTFd.models import Challenges, Solves, db
+from CTFd.models import Challenges, db
 
 
 class NCPSChallenge(Challenges):
