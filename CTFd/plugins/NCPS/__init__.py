@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from CTFd import utils
+from CTFd.utils.dates import ctf_ended, ctf_paused, ctf_started
 from CTFd.utils.modes import get_model
 from CTFd.models import db, Awards, Challenges, Teams
 from CTFd.plugins.challenges import CHALLENGE_CLASSES, BaseChallenge
@@ -152,7 +152,7 @@ def NCPS_worker():
     # TODO have a settings page where this can be manually paused and restarted in case it misbehaves
     # TODO On the settings page also show the status of this thread (I.E. Running/stopped) and who is king of every hill
     with db.app.app_context():
-        if not utils.ctf_paused() and not utils.ctf_ended():
+        if ctf_started() and not ctf_paused() and not ctf_ended():
             chals = Challenges.query.filter_by(type="NCPS").all()
             for c in chals:
                 assert isinstance(c, NCPSChallenge)
@@ -161,7 +161,7 @@ def NCPS_worker():
                 chal_id = c.id
                 attack_interval = c.attack_interval
 
-                teams = c.teams
+                teams = Teams.query.all()
                 for t in teams:
                     team_name = t.name
                     if NCPS_timers.get(chal_id, None) is None:
