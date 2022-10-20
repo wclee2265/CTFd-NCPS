@@ -2,42 +2,41 @@
 
 {% block header %}
 <div class="alert alert-secondary" role="alert">
-	Dynamic value challenges decrease in value as they receive solves. The more solves a dynamic challenge has,
-	the lower its value is to everyone who has solved it.
+	NCPS(Naval Cyber Practice System)는 실시간으로 들어오는 공격을 방어하는 형식의 문제입니다.
 </div>
 {% endblock %}
 
 
 {% block value %}
 <div class="form-group">
-	<label for="value">Initial Value<br>
+	<label for="value">Value<br>
 		<small class="form-text text-muted">
-			This is how many points the challenge is worth initially.
+			공격이 수행되기 전 초기 점수를 입력하세요.
 		</small>
 	</label>
-	<input type="number" class="form-control" name="initial" placeholder="Enter value" required>
+	<input type="number" class="form-control" name="value" placeholder="Enter value" required>
 
 </div>
 
 <div class="form-group">
-	<label for="value">Decay Limit<br>
+	<label for="value">Attack Interval<br>
 		<small class="form-text text-muted">
-			The amount of solves before the challenge reaches its minimum value
+			공격이 수행될 주기(분)를 입력하세요.
 		</small>
 	</label>
-	<input type="number" class="form-control" name="decay" placeholder="Enter decay limit" required>
+	<input type="number" class="form-control" name="attack_interval" placeholder="Enter attack interval" required>
 </div>
 
 <div class="form-group">
-	<label for="value">Minimum Value<br>
+	<label for="value">Attack Point<br>
 		<small class="form-text text-muted">
-			This is the lowest that the challenge can be worth
+			공격 방어에 실패할 때마다 차감될 점수를 입력하세요.
 		</small>
 	</label>
-	<input type="number" class="form-control" name="minimum" placeholder="Enter minimum value" required>
+	<input type="number" class="form-control" name="attack_point" placeholder="Enter attack points" required>
 </div>
 {% endblock %}
 
 {% block type %}
-<input type="hidden" value="dynamic" name="type" id="chaltype">
+<input type="hidden" value="NCPS" name="type" id="chaltype">
 {% endblock %}

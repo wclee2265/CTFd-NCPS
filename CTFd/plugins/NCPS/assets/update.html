@@ -2,38 +2,30 @@
 
 {% block value %}
 <div class="form-group">
-	<label for="value">Current Value<br>
+	<label for="value">Value<br>
 		<small class="form-text text-muted">
-			This is how many points the challenge is worth right now.
+			공격이 수행되기 전 초기 점수를 입력하세요.
 		</small>
 	</label>
-	<input type="number" class="form-control chal-value" name="value" value="{{ challenge.value }}" disabled>
+	<input type="number" class="form-control" name="value" placeholder="Enter value" required>
+
 </div>
 
 <div class="form-group">
-	<label for="value">Initial Value<br>
+	<label for="value">Attack Interval<br>
 		<small class="form-text text-muted">
-			This is how many points the challenge was worth initially.
+			공격이 수행될 주기(분)를 입력하세요.
 		</small>
 	</label>
-	<input type="number" class="form-control chal-initial" name="initial" value="{{ challenge.initial }}" required>
+	<input type="number" class="form-control" name="attack_interval" placeholder="Enter attack interval" required>
 </div>
 
 <div class="form-group">
-	<label for="value">Decay Limit<br>
+	<label for="value">Attack Point<br>
 		<small class="form-text text-muted">
-			The amount of solves before the challenge reaches its minimum value
+			공격 방어에 실패할 때마다 차감될 점수를 입력하세요.
 		</small>
 	</label>
-	<input type="number" class="form-control chal-decay" name="decay" value="{{ challenge.decay }}" required>
-</div>
-
-<div class="form-group">
-	<label for="value">Minimum Value<br>
-		<small class="form-text text-muted">
-			This is the lowest that the challenge can be worth
-		</small>
-	</label>
-	<input type="number" class="form-control chal-minimum" name="minimum" value="{{ challenge.minimum }}" required>
+	<input type="number" class="form-control" name="attack_point" placeholder="Enter attack points" required>
 </div>
 {% endblock %}

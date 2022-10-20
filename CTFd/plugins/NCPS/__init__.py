@@ -59,12 +59,9 @@ class NCPS(BaseChallenge):
     challenge_model = NCPSChallenge
 
     @classmethod
-    def update_awards(
-        cls, challenge
-    ):  # update awards that received from the NCPS challenge
-        Model = get_model()
-        awards = Awards.query.filter_by(challenge_id=challenge.id).all()
-        # TODO: update awards value from the NCPS challenge
+    def update_awards(cls, challenge):
+        # update awards that received from the NCPS challengep
+        pass
 
     @classmethod
     def read(cls, challenge):
@@ -79,14 +76,10 @@ class NCPS(BaseChallenge):
             "id": challenge.id,
             "name": challenge.name,
             "value": challenge.value,
-            "initial": challenge.initial,
-            "decay": challenge.decay,
-            "minimum": challenge.minimum,
             "description": challenge.description,
             "connection_info": challenge.connection_info,
             "category": challenge.category,
             "state": challenge.state,
-            "max_attempts": challenge.max_attempts,
             "type": challenge.type,
             "type_data": {
                 "id": cls.id,
