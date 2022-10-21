@@ -9,7 +9,7 @@ from flask_apscheduler import APScheduler
 
 from logging import basicConfig, getLogger, DEBUG, ERROR
 
-from .model import NCPSChallenge
+from .model import NCPSChallenge, NCPSAttackHistory
 from .blueprint import load_bp
 from pickle import dump, load as pickle
 from os import getcwd, path
@@ -108,12 +108,7 @@ class NCPS(BaseChallenge):
             # We need to set these to floats so that the next operations don't operate on strings
             if attr in ("attack_point", "attack_interval"):
                 value = int(value)
-            print(attr, value)
             setattr(challenge, attr, value)
-
-        print(data)
-        print(challenge.attack_interval)
-        print(challenge.state)
 
         NCPS.update_awards(challenge)
         db.session.commit()
@@ -194,9 +189,17 @@ def NCPS_worker():
                                 )
                             )
                             # 공격 기록 추가
+                            ncps_attack_history = NCPSAttackHistory(
+                                team_id=account_id, user_id=account_id, chal_id=chal_id
+                            )
+                            ncps_attack_history.name = (
+                                "Team '{}' has failed to defense attacks".format(
+                                    account_name
+                                )
+                            )
 
-                            # db.session.add()
-                            # db.session.commit()
+                            db.session.add(ncps_attack_history)
+                            db.session.commit()
         else:
             logger.debug("Game is paused")
     # Save the current state of the timers in a pickle file
