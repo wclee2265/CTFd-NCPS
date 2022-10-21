@@ -60,7 +60,9 @@ class NCPS(BaseChallenge):
 
     @classmethod
     def update_awards(cls, challenge):
-        # update awards that received from the NCPS challengep
+        # update awards that received from the NCPS challenge
+        # TODO 공격 기록을 기반으로 Award를 다시 계산하도록 수정
+        teams = Teams.query.all()  # 모든 팀이 아니라 NCPS에 참여한 팀만 점수를 수정
         pass
 
     @classmethod
@@ -112,9 +114,9 @@ class NCPS(BaseChallenge):
         print(data)
         print(challenge.attack_interval)
         print(challenge.state)
-        db.session.commit()
-        NCPS.update_awards(challenge)
 
+        NCPS.update_awards(challenge)
+        db.session.commit()
         return challenge
 
     @staticmethod
@@ -159,39 +161,42 @@ def NCPS_worker():
                 chal_name = c.name
                 chal_id = c.id
                 attack_interval = c.attack_interval
+                if NCPS_timers.get(chal_id, None) is None:
+                    logger.debug("Initializing '{}' timer".format(chal_name))
+                    NCPS_timers[chal_id] = 0
+                else:
+                    if NCPS_timers[chal_id] < attack_interval:
+                        NCPS_timers[chal_id] += 1
+                        logger.debug(
+                            "Incrementing '{}' timer : {}".format(
+                                chal_name, NCPS_timers[chal_id]
+                            )
+                        )
 
-                teams = Teams.query.all()
-                for t in teams:
-                    team_name = t.name
-                    team_id = t.id
-                    if NCPS_timers.get(chal_id, None) is None:
-                        logger.debug("Initializing '{}' timer".format(chal_name))
+                    if NCPS_timers[chal_id] >= attack_interval:  # Reset Timer
+                        logger.debug("Resetting '{}' timer".format(chal_name))
                         NCPS_timers[chal_id] = 0
-                    else:
-                        if NCPS_timers[chal_id] < attack_interval:
-                            logger.debug("Incrementing '{}' timer'".format(chal_name))
-                            NCPS_timers[chal_id] += 1
-                        if NCPS_timers[chal_id] == attack_interval:
-                            # Reset Timer
-                            logger.debug("Resetting '{}' timer".format(chal_name))
-                            NCPS_timers[chal_id] = 0
+                        logger.debug(
+                            "'{}' timer is at '{}'".format(
+                                chal_name, NCPS_timers.get(chal_id, 0)
+                            )
+                        )
+
+                        teams = Teams.query.all()
+                        for account in teams:  # TODO: 해당 문제에 해당하는 팀들만 점수계산하도록 수정
+                            account_name = account.name
+                            account_id = account.id
 
                             # TODO: test attack, availabliity
-
-                            # Timer has maxed out, give points to the king
-                            solve = Awards(teamid=team_id, name=chal_id, value=10)
-                            solve.description = "Team '{}' is king of '{}'".format(
-                                team_name, chal_name
+                            logger.debug(
+                                "{}팀에 대해 '{}'문제에서 공격 점수만큼 점수를 차감합니다.".format(
+                                    account_name, chal_name
+                                )
                             )
-                            db.session.add(solve)
+                            # 공격 기록 추가
 
-                            db.session.commit()
-                            # db.session.expunge_all()
-                    logger.debug(
-                        "'{}' timer is at '{}'".format(
-                            chal_name, NCPS_timers.get(chal_id, 0)
-                        )
-                    )
+                            # db.session.add()
+                            # db.session.commit()
         else:
             logger.debug("Game is paused")
     # Save the current state of the timers in a pickle file
