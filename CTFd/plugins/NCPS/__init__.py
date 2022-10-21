@@ -104,11 +104,17 @@ class NCPS(BaseChallenge):
 
         for attr, value in data.items():
             # We need to set these to floats so that the next operations don't operate on strings
-            if attr in ("initial", "minimum", "attack_point", "attack_interval"):
-                value = float(value)
+            if attr in ("attack_point", "attack_interval"):
+                value = int(value)
+            print(attr, value)
             setattr(challenge, attr, value)
 
+        print(data)
+        print(challenge.attack_interval)
+        print(challenge.state)
+        db.session.commit()
         NCPS.update_awards(challenge)
+
         return challenge
 
     @staticmethod
@@ -157,6 +163,7 @@ def NCPS_worker():
                 teams = Teams.query.all()
                 for t in teams:
                     team_name = t.name
+                    team_id = t.id
                     if NCPS_timers.get(chal_id, None) is None:
                         logger.debug("Initializing '{}' timer".format(chal_name))
                         NCPS_timers[chal_id] = 0
@@ -172,9 +179,9 @@ def NCPS_worker():
                             # TODO: test attack, availabliity
 
                             # Timer has maxed out, give points to the king
-                            solve = Awards(teamid=team_name, name=chal_id, value=10)
+                            solve = Awards(teamid=team_id, name=chal_id, value=10)
                             solve.description = "Team '{}' is king of '{}'".format(
-                                _team_name(team_name), chal_name
+                                team_name, chal_name
                             )
                             db.session.add(solve)
 
