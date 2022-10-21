@@ -1,5 +1,8 @@
 {% extends "admin/base.html" %}
 
+{% block stylesheets %}
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-md-12">
@@ -39,7 +42,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for history in attack_histories %}
+                    {% for history in attack_histories.items %}
                     <tr>
                         <td class="d-block border-right text-center" data-checkbox>
                             <div class="form-check">
@@ -52,12 +55,34 @@
                         <td class="d-none d-md-table-cell d-lg-table-cell">{{ history.user_id }}</td>
                         <td class="d-none d-md-table-cell d-lg-table-cell text-center">{{ history.team_id }}</td>
                         <td class="d-none d-md-table-cell d-lg-table-cell text-center">{{ history.value }}</td>
-                        <td class="d-none d-md-table-cell d-lg-table-cell text-center">{{ history.date }}</td>
+                        <td class="d-none d-md-table-cell d-lg-table-cell text-center solve-time">
+                            <span data-time="{{ history.date | isoformat }}"></span>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+        {% if attack_histories.pages > 1 %}
+        <div class="text-center">Page
+            <br>
+            {% if attack_histories.page != 1 %}
+            <a href="{{ prev_page }}">&lt;&lt;&lt;</a>
+            {% endif %}
+            <select class="page-select">
+                {% for page in range(1, attack_histories.pages + 1) %}
+                <option {% if attack_histories.page==page %}selected{% endif %}>{{ page }}</option>
+                {% endfor %}
+            </select>
+            {% if attack_histories.next_num %}
+            <a href="{{ next_page }}">&gt;&gt;&gt;</a>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block entrypoint %}
+<script defer src="{{ url_for('views.themes', theme='admin', path='js/pages/main.js') }}"></script>
 {% endblock %}

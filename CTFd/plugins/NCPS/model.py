@@ -1,6 +1,8 @@
 from CTFd.models import Challenges, db
 import datetime
 
+from sqlalchemy.ext.hybrid import hybrid_property
+
 
 class NCPSChallenge(Challenges):
     __mapper_args__ = {"polymorphic_identity": "NCPS"}
@@ -35,6 +37,26 @@ class NCPSAttackHistory(db.Model):
     team = db.relationship(
         "Teams", foreign_keys="NCPSAttackHistory.team_id", lazy="select"
     )
+    challenge = db.relationship(
+        "Challenges", foreign_keys="NCPSAttackHistory.chal_id", lazy="select"
+    )
 
-    def __init__(self, *args, **kwargs):
-        super(NCPSAttackHistory, self).__init__(**kwargs)
+    @hybrid_property
+    def account_id(self):
+        from CTFd.utils import get_config
+
+        user_mode = get_config("user_mode")
+        if user_mode == "teams":
+            return self.team_id
+        elif user_mode == "users":
+            return self.user_id
+
+    @hybrid_property
+    def account(self):
+        from CTFd.utils import get_config
+
+        user_mode = get_config("user_mode")
+        if user_mode == "teams":
+            return self.team
+        elif user_mode == "users":
+            return self.user
