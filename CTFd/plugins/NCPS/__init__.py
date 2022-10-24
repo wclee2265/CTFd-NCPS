@@ -13,6 +13,7 @@ from .model import NCPSChallenge, NCPSAttackHistory
 from .blueprint import load_bp
 from pickle import dump, load as pickle
 from os import getcwd, path
+import datetime
 
 basicConfig(level=ERROR)
 logger = getLogger(__name__)
@@ -157,14 +158,20 @@ def NCPS_worker():
                 chal_id = c.id
                 attack_interval = c.attack_interval
                 if NCPS_timers.get(chal_id, None) is None:
-                    logger.debug("Initializing '{}' timer".format(chal_name))
+                    logger.debug(
+                        "Initializing '{}' timer at {}".format(
+                            chal_name, datetime.datetime.now()
+                        )
+                    )
                     NCPS_timers[chal_id] = 0
                 else:
                     if NCPS_timers[chal_id] < attack_interval:
                         NCPS_timers[chal_id] += 1
                         logger.debug(
-                            "Incrementing '{}' timer : {}".format(
-                                chal_name, NCPS_timers[chal_id]
+                            "Incrementing '{}' timer : {} at {}".format(
+                                chal_name,
+                                NCPS_timers[chal_id],
+                                datetime.datetime.now(),
                             )
                         )
 

@@ -1,4 +1,10 @@
-{
-    "name": "NCPS",
-    "route": "/NCPS/dashboard"
-}
+[
+    {
+        "name": "NCPS",
+        "route": "/NCPS/dashboard"
+    },
+    {
+        "name": "Attack_history",
+        "route": "/NCPS/attack_history"
+    }
+]
