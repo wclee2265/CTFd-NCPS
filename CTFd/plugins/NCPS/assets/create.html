@@ -1,0 +1,42 @@
+{% extends "admin/challenges/create.html" %}
+
+{% block header %}
+<div class="alert alert-secondary" role="alert">
+	NCPS(Naval Cyber Practice System)는 실시간으로 들어오는 공격을 방어하는 형식의 문제입니다.
+</div>
+{% endblock %}
+
+
+{% block value %}
+<div class="form-group">
+	<label for="value">Value<br>
+		<small class="form-text text-muted">
+			공격이 수행되기 전 초기 점수를 입력하세요.
+		</small>
+	</label>
+	<input type="number" class="form-control" name="value" placeholder="Enter value" required>
+
+</div>
+
+<div class="form-group">
+	<label for="value">Attack Interval<br>
+		<small class="form-text text-muted">
+			공격이 수행될 주기(분)를 입력하세요.
+		</small>
+	</label>
+	<input type="number" class="form-control" name="attack_interval" placeholder="Enter attack interval" required>
+</div>
+
+<div class="form-group">
+	<label for="value">Attack Point<br>
+		<small class="form-text text-muted">
+			공격 방어에 실패할 때마다 차감될 점수를 입력하세요.
+		</small>
+	</label>
+	<input type="number" class="form-control" name="attack_point" placeholder="Enter attack points" required>
+</div>
+{% endblock %}
+
+{% block type %}
+<input type="hidden" value="NCPS" name="type" id="chaltype">
+{% endblock %}

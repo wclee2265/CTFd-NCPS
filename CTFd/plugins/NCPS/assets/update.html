@@ -1,0 +1,34 @@
+{% extends "admin/challenges/update.html" %}
+
+{% block value %}
+<div class="form-group">
+	<label for="value">Value<br>
+		<small class="form-text text-muted">
+			공격이 수행되기 전 초기 점수를 입력하세요.
+		</small>
+	</label>
+	<input type="number" class="form-control" name="value" placeholder="Enter value" value="{{ challenge.value }}"
+		required>
+
+</div>
+
+<div class="form-group">
+	<label for="value">Attack Interval<br>
+		<small class="form-text text-muted">
+			공격이 수행될 주기(분)를 입력하세요.
+		</small>
+	</label>
+	<input type="number" class="form-control" name="attack_interval" placeholder="Enter attack interval"
+		value="{{ challenge.attack_interval }}" required>
+</div>
+
+<div class="form-group">
+	<label for="value">Attack Point<br>
+		<small class="form-text text-muted">
+			공격 방어에 실패할 때마다 차감될 점수를 입력하세요.
+		</small>
+	</label>
+	<input type="number" class="form-control" name="attack_point" placeholder="Enter attack points"
+		value="{{ challenge.attack_point }}" required>
+</div>
+{% endblock %}
