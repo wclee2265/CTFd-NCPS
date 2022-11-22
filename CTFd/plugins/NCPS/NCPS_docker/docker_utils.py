@@ -25,12 +25,21 @@ class DockerUtils:
                 mem_limit=DockerUtils.convert_readable_text("128m"), cpu_limit=int(0.5 * 1e9)
             ),
             # constraints=["node.labels.name==" + node],
-            endpoint_spec=docker.types.EndpointSpec(ports={2227: (22, "tcp", "host"), 2228: 80}),
+            endpoint_spec=docker.types.EndpointSpec(ports={2225: (22, "tcp", "host")}),
         )
+        client.close()
 
     def list_docker_container():
         client = docker.DockerClient(base_url="unix:///var/run/docker.sock")
-        return client.containers.list()
+        container_list = client.containers.list()
+        client.close()
+        return container_list
+
+    def list_docker_service():
+        client = docker.DockerClient(base_url="unix:///var/run/docker.sock")
+        service_list = client.services.list()
+        client.close()
+        return service_list
 
     def remove_docker_service():
         pass
@@ -49,6 +58,16 @@ class DockerUtils:
             return int(text[:-1]) * 1024 * 1024 * 1024
 
         return 0
+
+    @staticmethod
+    def remove_docker_service(name: str):
+        client = docker.DockerClient(base_url="unix:///var/run/docker.sock")
+        services = client.services.list(filters={"name": name})
+
+        for s in services:
+            s.remove()
+
+        client.close()
 
     """
     @staticmethod
@@ -93,4 +112,10 @@ class DockerUtils:
 
 
 if __name__ == "__main__":
-    DockerUtils.create_docker_service("scada:latest", 1, "test_chal", 1, "test_team", "password")
+    # DockerUtils.create_docker_service("scada:latest", 1, "test_chal", 1, "test_team", "password")
+    print(DockerUtils.list_docker_container())
+    service_list = DockerUtils.list_docker_service()
+    for service in service_list:
+        print(service.attrs)
+
+    DockerUtils.remove_docker_service(name=service_list[-1].attrs["Spec"]["Name"])
