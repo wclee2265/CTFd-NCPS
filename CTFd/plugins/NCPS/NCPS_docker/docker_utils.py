@@ -11,18 +11,10 @@ class DockerUtils:
     def create_docker_service(docker_image, challenge_id, challenge_name, team_id, team_name, user_passwd):
         uuid_code = uuid.uuid4()
         dns = []
+
         nodes = ["linux-1"]
 
-        win_nodes = []
-        linux_nodes = []
-        for node in nodes:
-            if node.startswith("windows"):
-                win_nodes.append(node)
-            else:
-                linux_nodes.append(node)
-
         client = docker.DockerClient(base_url="unix:///var/run/docker.sock")
-        node = DockerUtils.choose_node(docker_image, win_nodes, linux_nodes)
         client.services.create(
             image=docker_image,
             name=f"{challenge_id}-{challenge_name}-{team_id}-{team_name}-{uuid_code}",
@@ -32,8 +24,8 @@ class DockerUtils:
             resources=docker.types.Resources(
                 mem_limit=DockerUtils.convert_readable_text("128m"), cpu_limit=int(0.5 * 1e9)
             ),
-            constraints=["node.labels.name==" + node],
-            endpoint_spec=docker.types.EndpointSpec(mode="dnsrr", ports={}),
+            # constraints=["node.labels.name==" + node],
+            endpoint_spec=docker.types.EndpointSpec(ports={2227: (22, "tcp", "host"), 2228: 80}),
         )
 
     def list_docker_container():
@@ -42,21 +34,6 @@ class DockerUtils:
 
     def remove_docker_service():
         pass
-
-    @staticmethod
-    def choose_node(image, win_nodes, linux_nodes):
-        is_win = False
-        image_split = image.split(":")
-        if len(image_split) > 1:
-            if image_split[1].startswith("windows"):
-                is_win = True
-
-        if is_win:
-            node = random.choice(win_nodes)
-        else:
-            node = random.choice(linux_nodes)
-
-        return node
 
     @staticmethod
     def convert_readable_text(text):
@@ -113,3 +90,7 @@ class DockerUtils:
 
         return True
     """
+
+
+if __name__ == "__main__":
+    DockerUtils.create_docker_service("scada:latest", 1, "test_chal", 1, "test_team", "password")

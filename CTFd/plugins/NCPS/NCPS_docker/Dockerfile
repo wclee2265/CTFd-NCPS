@@ -29,7 +29,7 @@ EXPOSE 22
 COPY SCADA_firmware /
 RUN chmod +x /SCADA_firmware
 
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
