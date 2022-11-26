@@ -1,4 +1,9 @@
-{% block challenge %}
+{% extends "admin/base.html" %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block content %}
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -10,7 +15,17 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="ncps">NCPS</label>
-                                <input type="text" class="form-control" id="ncps" name="ncps" placeholder="NCPS">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label class="input-group-text" for="inputGroupSelect01">문제</label>
+                                    </div>
+                                    <select class="custom-select" id="inputGroupSelect01">
+                                      <option selected>Choose...</option>                                      
+                                      {% for chal in ncps_challenges %}                     
+                                        <option value="{{chal.id}}">{{chal.name}}</option>                                                                            
+                                      {% endfor %}
+                                    </select>
+                                  </div>
                             </div>
                         </div>
                     </div>

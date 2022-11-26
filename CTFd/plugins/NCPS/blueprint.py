@@ -5,7 +5,7 @@ from CTFd.utils.modes import get_model
 from CTFd.utils.decorators import admins_only
 
 
-from .model import NCPSAttackHistory
+from .model import NCPSChallenge, NCPSAttackHistory
 
 ncps_bp = Blueprint(
     "NCPS",
@@ -21,7 +21,15 @@ def load_bp():
     @ncps_bp.route("/dashboard", methods=["GET"])
     @admins_only
     def get_dashboard():
-        return render_template("NCPS_dashboard.html")
+        ncps_challenges = NCPSChallenge.query.all()
+        print(ncps_challenges)
+        for chal in ncps_challenges:
+            print(chal.name)
+
+        return render_template(
+            "NCPS_dashboard.html",
+            ncps_challenges=ncps_challenges,
+        )
 
     @ncps_bp.route("/attack_history", methods=["GET"])
     @admins_only
